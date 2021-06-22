@@ -1,0 +1,91 @@
+
+============FORUM====================
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"slug": "technopark_db", "title": "how", "user": "nikitavolkov"}' \
+  http://localhost:8081/api/forum/create 
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:8081/api/forum/andreyex/details 
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:8081/api/forum/technopark_db/details 
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:8081/api/forum/technopark_db/users
+
+=============USERS===============
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"fullname": "Chloe Thomas", "about": "Discernitur in gaudet teque. Aqua ne. Melior hic ego quaeritur edendi sidera, visa fac. Lene. E.", "email": "ipsum.6J8NZ1H6hciC7@haceos.com"}' \
+  http://localhost:5000/api/user/maerere.25ghAmK96cf57U/create 
+
+  curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"fullname": "Nikita Volkov", "about": "I am student", "email": "4uvak1707@mail.ru"}' \
+  http://localhost:8081/api/user/nikitavolkov/create 
+
+  curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:5000/api/user/ob.cik7LG9fmIC571/profile 
+
+   curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"fullname": "Nikita Volkov", "about":"", "email": "nikitavolkov1707@gmail.com"}' \
+  http://localhost:8081/api/user/4uvak1707/profile 
+
+  ============THREADS===================
+
+  curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title": "algo_courses", "author": "4uvak1707", "message": "Here you can learn algorithms"}' \
+  http://localhost:8081/api/forum/technopark_db/create 
+
+  curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:8081/api/forum/technopark_db/threads?since=1 
+
+  curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:5000/api/thread/cKZBC3jpocF5s/details 
+
+
+  curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:5000/api/thread/xa45G-X165jF8/posts?limit=30&sort=flat&since=1
+
+  curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title": "db", "message": "Here you can sql and nosql"}' \
+  http://localhost:8081/api/thread/20/details 
+
+ curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"nickname": "4uvak1707", "voice": "1"}' \
+  http://localhost:8081/api/thread/20/vote 
+
+
+  =========POSTS================
+
+
+   curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '[{"parent": 0, "author": "4uvak1707", "message": "hello from post 1"}, {"parent": 0, "author": "4uvak1707", "message": "hello from post 2"}]' \
+  http://localhost:8081/api/thread/20/create 
+
+
+  curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"message": "I changed text of the message"}' \
+  http://localhost:8081/api/post/4/details 
+
+
+curl --header "Content-Type: application/json" \
+  --request GET \
+  --data '["forum", "author", "thread"]' \
+  http://localhost:8081/api/post/4/details
+
+
+  =========SERVICE===================
+
+ curl --header "Content-Type: application/json" \
+  --request POST \
+  http://localhost:5000/api/service/status
+
+  curl --header "Content-Type: application/json" \
+  --request POST \
+  http://localhost:5000/api/service/clear
+
+
+

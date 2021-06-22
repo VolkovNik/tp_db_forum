@@ -1,0 +1,13 @@
+{
+  "postgres":{
+    "host":"localhost",
+    "port":5432,
+    "db":"docker",
+    "user":"docker",
+    "password":"docker"
+  },
+  "main":{
+    "host":"main",
+    "port":":5000"
+  }
+}
