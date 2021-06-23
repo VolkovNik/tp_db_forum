@@ -22,6 +22,8 @@ CREATE UNLOGGED TABLE forums
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
+CREATE INDEX ON forums(author);
+
 CREATE UNLOGGED TABLE forums_users
 (
     author CITEXT NOT NULL,
@@ -48,6 +50,9 @@ CREATE UNLOGGED TABLE threads
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
+CREATE INDEX ON threads(forum);
+CREATE INDEX ON threads(author);
+
 CREATE UNLOGGED TABLE posts
 (
     id          SERIAL  PRIMARY KEY,
@@ -66,6 +71,7 @@ CREATE UNLOGGED TABLE posts
 
 CREATE INDEX ON posts(thread);
 CREATE INDEX ON posts(author);
+CREATE INDEX ON posts(forum);
 CREATE INDEX ON posts(thread, path DESC);
 CREATE INDEX ON posts(thread, path ASC);
 CREATE INDEX ON posts(thread, id DESC);
@@ -79,6 +85,9 @@ CREATE UNLOGGED TABLE votes
     CONSTRAINT fk_nickname  FOREIGN KEY(nickname)   REFERENCES users(nickname) ON DELETE CASCADE,
     CONSTRAINT fk_thread_id FOREIGN KEY(thread_id)  REFERENCES threads(id)     ON DELETE CASCADE
 );
+
+CREATE INDEX ON votes(nickname);
+CREATE INDEX ON votes(thread_id);
 
 CREATE FUNCTION declare_path() RETURNS TRIGGER AS $declare_path$
 DECLARE
