@@ -52,6 +52,7 @@ CREATE UNLOGGED TABLE threads
 
 CREATE INDEX ON threads(forum);
 CREATE INDEX ON threads(author);
+CREATE INDEX ON threads(slug, id, forum);
 
 CREATE UNLOGGED TABLE posts
 (
