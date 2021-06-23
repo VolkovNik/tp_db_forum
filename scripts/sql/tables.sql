@@ -71,7 +71,7 @@ CREATE UNLOGGED TABLE posts
 CREATE INDEX ON posts(thread);
 CREATE INDEX ON posts(author);
 CREATE INDEX ON posts(forum);
-CREATE INDEX ON posts(parent);
+CREATE INDEX ON posts(parent, path);
 
 CREATE UNLOGGED TABLE votes
 (
