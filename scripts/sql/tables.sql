@@ -48,8 +48,6 @@ CREATE UNLOGGED TABLE threads
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
-CREATE INDEX ON threads(forum);
-CREATE INDEX ON threads(author);
 CREATE INDEX ON threads(slug, id, forum);
 
 CREATE UNLOGGED TABLE posts
@@ -68,8 +66,6 @@ CREATE UNLOGGED TABLE posts
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
-CREATE INDEX ON posts(thread);
-CREATE INDEX ON posts(author);
 CREATE INDEX ON posts(forum);
 CREATE INDEX ON posts(parent, path);
 CREATE INDEX ON posts(path, id);
