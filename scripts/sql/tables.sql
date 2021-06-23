@@ -8,6 +8,10 @@ CREATE UNLOGGED TABLE users
     email       CITEXT  NOT NULL UNIQUE
 );
 
+CREATE UNIQUE INDEX ON users (nickname, email);
+CREATE UNIQUE INDEX ON users (nickname, email, about, fullname);
+CREATE UNIQUE INDEX ON users (nickname DESC);
+
 CREATE UNLOGGED TABLE forums
 (
     slug    CITEXT PRIMARY KEY,
@@ -26,6 +30,9 @@ CREATE UNLOGGED TABLE forums_users
     CONSTRAINT fk_slug   FOREIGN KEY(slug)   REFERENCES forums(slug)    ON DELETE CASCADE,
     PRIMARY KEY(author, slug)
 );
+
+CREATE INDEX ON forums_users (slug);
+CREATE INDEX ON forums_users (author);
 
 CREATE UNLOGGED TABLE threads
 (
@@ -56,6 +63,12 @@ CREATE UNLOGGED TABLE posts
     CONSTRAINT fk_thread FOREIGN KEY(thread) REFERENCES threads(id)     ON DELETE CASCADE,
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
+
+CREATE UNIQUE INDEX ON posts(thread);
+CREATE UNIQUE INDEX ON posts(author);
+CREATE INDEX ON posts(thread, path DESC);
+CREATE INDEX ON posts(thread, path ASC);
+CREATE INDEX ON posts(thread, id DESC);
 
 CREATE UNLOGGED TABLE votes
 (
@@ -146,3 +159,5 @@ CREATE TRIGGER insert_user_to_forums_users AFTER INSERT ON posts
 
 CREATE TRIGGER insert_user_to_forums_users AFTER INSERT ON threads
     FOR EACH ROW EXECUTE PROCEDURE insert_user_to_forums_users();
+
+VACUUM ANALYSE;
