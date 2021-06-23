@@ -8,8 +8,6 @@ CREATE UNLOGGED TABLE users
     email       CITEXT  NOT NULL UNIQUE
 );
 
-CREATE INDEX ON users (email);
-
 CREATE UNLOGGED TABLE forums
 (
     slug    CITEXT PRIMARY KEY,
@@ -20,8 +18,6 @@ CREATE UNLOGGED TABLE forums
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
-CREATE INDEX ON forums(author);
-
 CREATE UNLOGGED TABLE forums_users
 (
     author CITEXT NOT NULL,
@@ -30,9 +26,6 @@ CREATE UNLOGGED TABLE forums_users
     CONSTRAINT fk_slug   FOREIGN KEY(slug)   REFERENCES forums(slug)    ON DELETE CASCADE,
     PRIMARY KEY(author, slug)
 );
-
-CREATE INDEX ON forums_users (slug);
-CREATE INDEX ON forums_users (author);
 
 CREATE UNLOGGED TABLE threads
 (
@@ -66,7 +59,6 @@ CREATE UNLOGGED TABLE posts
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
-CREATE INDEX ON posts(forum);
 CREATE INDEX ON posts(parent, path);
 CREATE INDEX ON posts(path, id);
 CREATE INDEX ON posts(created, id);
