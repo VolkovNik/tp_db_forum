@@ -8,9 +8,7 @@ CREATE UNLOGGED TABLE users
     email       CITEXT  NOT NULL UNIQUE
 );
 
-CREATE UNIQUE INDEX ON users (nickname, email);
-CREATE UNIQUE INDEX ON users (nickname, email, about, fullname);
-CREATE UNIQUE INDEX ON users (nickname DESC);
+CREATE INDEX ON users (email);
 
 CREATE UNLOGGED TABLE forums
 (
@@ -73,9 +71,7 @@ CREATE UNLOGGED TABLE posts
 CREATE INDEX ON posts(thread);
 CREATE INDEX ON posts(author);
 CREATE INDEX ON posts(forum);
-CREATE INDEX ON posts(thread, path DESC);
-CREATE INDEX ON posts(thread, path ASC);
-CREATE INDEX ON posts(thread, id DESC);
+CREATE INDEX ON posts(parent);
 
 CREATE UNLOGGED TABLE votes
 (
@@ -88,7 +84,7 @@ CREATE UNLOGGED TABLE votes
 );
 
 CREATE INDEX ON votes(nickname);
-CREATE INDEX ON votes(thread_id);
+CREATE INDEX ON votes(thread_id, vote);
 
 CREATE FUNCTION declare_path() RETURNS TRIGGER AS $declare_path$
 DECLARE
