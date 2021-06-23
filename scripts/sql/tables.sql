@@ -73,8 +73,7 @@ CREATE UNLOGGED TABLE votes
     CONSTRAINT fk_thread_id FOREIGN KEY(thread_id)  REFERENCES threads(id)     ON DELETE CASCADE
 );
 
-CREATE INDEX ON votes(nickname);
-CREATE INDEX ON votes(thread_id, vote);
+CREATE INDEX ON votes(nickname, thread_id);
 
 CREATE FUNCTION declare_path() RETURNS TRIGGER AS $declare_path$
 DECLARE
