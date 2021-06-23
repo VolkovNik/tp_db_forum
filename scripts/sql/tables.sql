@@ -64,8 +64,8 @@ CREATE UNLOGGED TABLE posts
     CONSTRAINT fk_author FOREIGN KEY(author) REFERENCES users(nickname) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX ON posts(thread);
-CREATE UNIQUE INDEX ON posts(author);
+CREATE INDEX ON posts(thread);
+CREATE INDEX ON posts(author);
 CREATE INDEX ON posts(thread, path DESC);
 CREATE INDEX ON posts(thread, path ASC);
 CREATE INDEX ON posts(thread, id DESC);
