@@ -263,16 +263,48 @@ func (t *ThreadRepository) Vote(slugOrId string, vote domain.Vote) (domain.Threa
 
 	thread := domain.Thread{}
 
-	id, err := strconv.Atoi(slugOrId)
+	_, err := strconv.Atoi(slugOrId)
 	if err != nil {
-		err = t.db.QueryRow("SELECT id FROM threads WHERE slug = $1 LIMIT 1", slugOrId).Scan(&id)
+		var readedSlug *string
+
+		err = t.db.QueryRow("SELECT id, title, author, forum, message, votes, slug, created FROM threads WHERE slug = $1 LIMIT 1", slugOrId).Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Author,
+			&thread.Forum,
+			&thread.Message,
+			&thread.Votes,
+			&readedSlug,
+			&thread.Created,
+		)
+
+		if readedSlug != nil {
+			thread.Slug = *readedSlug
+		}
+		if err != nil {
+			return thread, domain.NotFoundError
+		}
+	} else {
+		var readedSlug *string
+
+		err = t.db.QueryRow("SELECT id, title, author, forum, message, votes, slug, created FROM threads WHERE id = $1 LIMIT 1", slugOrId).Scan(
+			&thread.Id,
+			&thread.Title,
+			&thread.Author,
+			&thread.Forum,
+			&thread.Message,
+			&thread.Votes,
+			&readedSlug,
+			&thread.Created,
+		)
+
+		if readedSlug != nil {
+			thread.Slug = *readedSlug
+		}
 		if err != nil {
 			return thread, domain.NotFoundError
 		}
 	}
-
-	thread.Id = id
-
 	_, err = t.db.Exec(`INSERT INTO votes (thread_id, nickname, vote)
 			VALUES ($1, $2, $3)
 			ON CONFLICT (thread_id, nickname) DO UPDATE SET vote = $3`,
@@ -284,27 +316,5 @@ func (t *ThreadRepository) Vote(slugOrId string, vote domain.Vote) (domain.Threa
 	if err != nil {
 		return thread, err
 	}
-
-	var readedSlug *string
-
-	err = t.db.QueryRow("SELECT id, title, author, forum, message, votes, slug, created FROM threads WHERE id = $1 LIMIT 1", thread.Id).Scan(
-		&thread.Id,
-		&thread.Title,
-		&thread.Author,
-		&thread.Forum,
-		&thread.Message,
-		&thread.Votes,
-		&readedSlug,
-		&thread.Created,
-		)
-
-	if readedSlug != nil {
-		thread.Slug = *readedSlug
-	}
-
-	if err != nil {
-		return thread, domain.NotFoundError
-	}
-
 	return thread, nil
 }
