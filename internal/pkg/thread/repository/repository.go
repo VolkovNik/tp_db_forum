@@ -316,5 +316,14 @@ func (t *ThreadRepository) Vote(slugOrId string, vote domain.Vote) (domain.Threa
 	if err != nil {
 		return thread, err
 	}
+
+	err = t.db.QueryRow(`SELECT votes FROM threads WHERE id = $1`, thread.Id).Scan(
+		&thread.Votes,
+		)
+
+	if err != nil {
+		return thread, err
+	}
+
 	return thread, nil
 }
