@@ -81,9 +81,9 @@ func (p *PostRepository) Create(slugOrId string, posts *domain.Posts) error {
 
 
 	for i, post := range *posts {
-		err = p.db.QueryRow("INSERT INTO posts (author, forum, message, parent, thread) " +
-			" values ($1, $2, $3, $4, $5) RETURNING id, created ", post.Author, forum, post.Message,
-			post.Parent, id).Scan(
+		err = p.db.QueryRow("INSERT INTO posts (author, forum, message, parent, thread, created) " +
+			" values ($1, $2, $3, $4, $5, $6) RETURNING id, created ", post.Author, forum, post.Message,
+			post.Parent, id, post.Created).Scan(
 			&(*posts)[i].Id,
 			&(*posts)[i].Created,
 				)
