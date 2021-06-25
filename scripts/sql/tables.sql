@@ -8,6 +8,10 @@ CREATE UNLOGGED TABLE users
     email       CITEXT  NOT NULL UNIQUE
 );
 
+CREATE UNIQUE INDEX ON users (nickname, email);
+CREATE UNIQUE INDEX ON users (nickname, email, about, fullname);
+CREATE UNIQUE INDEX ON users (nickname DESC);
+
 CREATE UNLOGGED TABLE forums
 (
     slug    CITEXT PRIMARY KEY,
@@ -28,6 +32,9 @@ CREATE UNLOGGED TABLE forums_users
     CONSTRAINT fk_slug   FOREIGN KEY(slug)   REFERENCES forums(slug)    ON DELETE CASCADE,
     PRIMARY KEY(author, slug)
 );
+
+CREATE INDEX ON forums_users (slug);
+CREATE INDEX ON forums_users (author);
 
 CREATE UNLOGGED TABLE threads
 (
@@ -63,6 +70,10 @@ CREATE UNLOGGED TABLE posts
 
 CREATE INDEX ON posts(path);
 CREATE INDEX ON posts(thread);
+CREATE INDEX ON posts(thread, path DESC);
+CREATE INDEX ON posts(thread, path ASC);
+CREATE INDEX ON posts(thread, id DESC);
+CREATE INDEX ON posts(thread, id ASC);
 
 CREATE UNLOGGED TABLE votes
 (
