@@ -8,9 +8,8 @@ CREATE UNLOGGED TABLE users
     email       CITEXT  NOT NULL UNIQUE
 );
 
+CREATE INDEX ON users USING hash(nickname);
 CREATE UNIQUE INDEX ON users (nickname, email);
-CREATE UNIQUE INDEX ON users (nickname, email, about, fullname);
-CREATE UNIQUE INDEX ON users (nickname DESC);
 
 CREATE UNLOGGED TABLE forums
 (
@@ -51,6 +50,7 @@ CREATE UNLOGGED TABLE threads
 );
 
 CREATE INDEX ON threads(forum);
+CREATE INDEX ON threads(id, votes);
 
 CREATE UNLOGGED TABLE posts
 (
@@ -70,10 +70,6 @@ CREATE UNLOGGED TABLE posts
 
 CREATE INDEX ON posts(path);
 CREATE INDEX ON posts(thread);
-CREATE INDEX ON posts(thread, path DESC);
-CREATE INDEX ON posts(thread, path ASC);
-CREATE INDEX ON posts(thread, id DESC);
-CREATE INDEX ON posts(thread, id ASC);
 
 CREATE UNLOGGED TABLE votes
 (
