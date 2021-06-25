@@ -47,6 +47,7 @@ func (p *PostRepository) Create(slugOrId string, posts *domain.Posts) error {
 			&forum,
 			)
 		if err != nil {
+			fmt.Println(err, 50)
 			return domain.NotFoundError
 		}
 	} else {
@@ -54,6 +55,7 @@ func (p *PostRepository) Create(slugOrId string, posts *domain.Posts) error {
 			&forum,
 		)
 		if err != nil {
+			fmt.Println(err, 58)
 			return domain.NotFoundError
 		}
 	}
@@ -68,45 +70,72 @@ func (p *PostRepository) Create(slugOrId string, posts *domain.Posts) error {
 			&parent,
 			)
 		if err != nil {
+			fmt.Println(err, 73)
 			return domain.ParentError
 		}
 		if parent != id {
+			fmt.Println(err, 77)
 			return domain.ParentError
 		}
 	}
 
-	query := "INSERT INTO posts (author, forum, message, parent, thread) values "
+
 	for i, post := range *posts {
-		if i != 0 {
-			query += ", "
-		}
-		query += fmt.Sprintf("('%s', '%s', '%s', %d, %d) ", post.Author, forum, post.Message,
-			post.Parent, id)
-	}
-
-	query += "RETURNING id, created"
-	rows, err := p.db.Query(query)
-	if err != nil {
-		return err
-	}
-
-	for idx := 0; rows.Next(); idx++ {
-		(*posts)[idx].Forum = forum
-		(*posts)[idx].Thread = id
-		if err = rows.Scan(&(*posts)[idx].Id, &(*posts)[idx].Created); err != nil {
-			return err
-		}
-	}
-
-	if rows.Err() != nil {
-		pgerr, _ := rows.Err().(pgx.PgError)
-		switch pgerr.Code {
-		case "23505":
-			return domain.ConflictError
-		default:
-			return domain.NotFoundError
+		err = p.db.QueryRow("INSERT INTO posts (author, forum, message, parent, thread) " +
+			" values ($1, $2, $3, $4, $5) RETURNING id, created ", post.Author, forum, post.Message,
+			post.Parent, id).Scan(
+			&(*posts)[i].Id,
+			&(*posts)[i].Created,
+				)
+		(*posts)[i].Forum = forum
+		(*posts)[i].Thread = id
+		if err != nil {
+			pgerr, _ := err.(pgx.PgError)
+			fmt.Println(pgerr, 109)
+			switch pgerr.Code {
+			case "23505":
+				return domain.ConflictError
+			default:
+				return domain.NotFoundError
+			}
 		}
 	}
+
+	//query := "INSERT INTO posts (author, forum, message, parent, thread) values "
+	//for i, post := range *posts {
+	//	if i != 0 {
+	//		query += ", "
+	//	}
+	//	query += fmt.Sprintf("('%s', '%s', '%s', %d, %d) ", post.Author, forum, post.Message,
+	//		post.Parent, id)
+	//}
+	//
+	//query += "RETURNING id, created"
+	//rows, err := p.db.Query(query)
+	//if err != nil {
+	//	fmt.Println(err, 94)
+	//	return err
+	//}
+	//
+	//for idx := 0; rows.Next(); idx++ {
+	//	(*posts)[idx].Forum = forum
+	//	(*posts)[idx].Thread = id
+	//	if err = rows.Scan(&(*posts)[idx].Id, &(*posts)[idx].Created); err != nil {
+	//		fmt.Println(err, 102)
+	//		return err
+	//	}
+	//}
+	//
+	//if rows.Err() != nil {
+	//	pgerr, _ := rows.Err().(pgx.PgError)
+	//	fmt.Println(pgerr, 109)
+	//	switch pgerr.Code {
+	//	case "23505":
+	//		return domain.ConflictError
+	//	default:
+	//		return domain.NotFoundError
+	//	}
+	//}
 
 	return nil
 }
